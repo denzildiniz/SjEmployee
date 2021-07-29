@@ -1,61 +1,63 @@
 const SjiEmp = require('../models/empSchema')
+const asyncWrapper = require('../middleware/asyncWrapper')
+const {createCustomError} = require('../error/custom-error')
 
 
-const getAllEmp = async (req,res) =>{
-    try {
+const getAllEmp = asyncWrapper( async (req,res) =>{
         getEmp = await SjiEmp.find({});
         res.status(200).json({getEmp})
-    } catch (error) {
-        
-        res.status(500).json({msg:error })
-    }
-}
-const createEmp = async (req,res) =>{
-    try {
+})
+
+const createEmp = asyncWrapper( async (req,res) =>{
+    
        const newEmp = await SjiEmp.create(req.body);
        res.status(201).json({newEmp})
-    } catch (error) {
-        res.status(500).json({msg:error })
-    }
-}
+    
+})
 
-const getSingleEmp = async (req,res) =>{
-    try {
+const getSingleEmp = asyncWrapper( async (req,res,next) =>{
+    
         const {id:empId} = req.params;
         const singleEmp = await SjiEmp.findOne({_id:empId});
         if(!singleEmp){
-            return res.status(404).josn({msg:`${empId} dose not exist's`})
+            // const error = new Error('not found')   /**for my ref */
+            // error.status=404;
+            // return next(error)
+
+            return next(createCustomError(`no employee with ${empId}`, 404))
+            
         }
 
         res.status(200).json({
             singleEmp
         })
-    } catch (error) {
-        res.status(500).json({msg:error.message})
-    }
-}
+    
+})
 
-const updateEmp = async (req,res) =>{
-    try {
-        res.send("update emp")
-    } catch (error) {
-        res.status(500).json({msg:error})
-    }
-}
+const updateEmp = asyncWrapper( async (req,res) =>{
+   
+        const {id:empId} = req.params;
+        const editEmp = await SjiEmp.findOneAndUpdate({_id:empId},req.body,{
+            new:true,
+            runValidators:true
+        });
 
-const deleteEmp = async(req,res) =>{
-    try {
+        if(!editEmp) 
+        return next(createCustomError(`no employee with ${empId}`, 404))
+
+        res.status(200).json({editEmp})
+   
+})
+
+const deleteEmp = asyncWrapper( async(req,res) =>{
+    
         const {id:empId} = req.params;
         const delEmp = await SjiEmp.findOneAndDelete({_id:empId});
-        if(!delEmp) return res.status(404).json({msg:`${empId} can not be found!!`});
+        if(!delEmp) return next(createCustomError(`no employee with ${empId}`, 404))
 
         res.status(200).json({msg:`sucess`})
         
-    } catch (error) {
-        res.status(500).json({
-            msg:error
-        })
-    }
-}
+    
+})
 
 module.exports = {getAllEmp ,createEmp,getSingleEmp, updateEmp ,deleteEmp}
