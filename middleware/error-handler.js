@@ -1,4 +1,4 @@
-const CustomApiError = require('../error/custom-error')
+const {CustomApiError} = require('../error/custom-error')
 
 const errorhandlerMiddleware = (err, req,res,next) =>{
     if(err instanceof CustomApiError){
@@ -6,7 +6,7 @@ const errorhandlerMiddleware = (err, req,res,next) =>{
             msg:err.message
         })
     }
-    return res.status(err.status).json({
+    return res.status(500).json({
         msg:'something went wrong'
     })
 }
