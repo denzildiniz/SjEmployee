@@ -1,6 +1,7 @@
 const SjiEmp = require('../models/empSchema')
 const asyncWrapper = require('../middleware/asyncWrapper')
 const {createCustomError} = require('../error/custom-error')
+const {joiSchema} = require('../middleware/joiVal')
 
 
 const getAllEmp = asyncWrapper( async (req,res) =>{
@@ -9,8 +10,10 @@ const getAllEmp = asyncWrapper( async (req,res) =>{
 })
 
 const createEmp = asyncWrapper( async (req,res) =>{
+
+        const valEmp = await joiSchema.validateAsync(req.body)
     
-       const newEmp = await SjiEmp.create(req.body);
+       const newEmp = await SjiEmp.create(valEmp);
        res.status(201).json({newEmp})
     
 })

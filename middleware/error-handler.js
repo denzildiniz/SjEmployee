@@ -1,4 +1,5 @@
 const {CustomApiError} = require('../error/custom-error')
+const Joi = require('joi')
 
 const errorhandlerMiddleware = (err, req,res,next) =>{
     if(err instanceof CustomApiError){
@@ -6,6 +7,10 @@ const errorhandlerMiddleware = (err, req,res,next) =>{
             msg:err.message
         })
     }
+    if(Joi.isError(err)){
+        return res.status(422).json({msg:err.message})
+    }
+
     return res.status(500).json({
         msg:'something went wrong'
     })
