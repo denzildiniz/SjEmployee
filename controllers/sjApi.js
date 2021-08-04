@@ -40,7 +40,8 @@ const getSingleEmp = asyncWrapper( async (req,res,next) =>{
 const updateEmp = asyncWrapper( async (req,res) =>{
    
         const {id:empId} = req.params;
-        const editEmp = await SjiEmp.findOneAndUpdate({_id:empId},req.body,{
+        const validateInput = await joiSchema.validateAsync(req.body)
+        const editEmp = await SjiEmp.findOneAndUpdate({_id:empId},validateInput,{
             new:true,
             runValidators:true
         });

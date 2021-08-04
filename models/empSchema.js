@@ -4,7 +4,7 @@ const empSchema = new mongoose.Schema({
     name:{
         type:String,
         required:true,
-        min:[3 ,'min 4 characted requierd'],
+        min:[2 ,'min 3 characted requierd'],
         unique:true 
     },
     email:{
