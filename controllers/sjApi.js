@@ -14,7 +14,7 @@ const createEmp = asyncWrapper( async (req,res) =>{
         const valEmp = await joiSchema.validateAsync(req.body)
     
        const newEmp = await SjiEmp.create(valEmp);
-       res.status(201).json({newEmp})
+       res.status(201).json({msg:'Data stored succesfully'})
     
 })
 

@@ -15,6 +15,7 @@ const port = process.env.PORT || 2500;
 // middlewares
 app.use(express.json());
 app.use(express.urlencoded({extended : false}))
+app.use(cors())
 
 // routes
 app.get('/',(req,res)=>{
